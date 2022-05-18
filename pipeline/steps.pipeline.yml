@@ -1,0 +1,40 @@
+parameters:
+- name: serviceConnection
+  type: string
+- name: subscriptionId
+  type: string
+- name: resourceGroupName
+  type: string
+  default: '$null'
+- name: location
+  type: string
+- name: stepName
+  type: string
+- name: displayName
+  type: string
+- name: templateFile
+  type: string
+- name: templateParameterFile
+  type: string
+  default: '$null'
+- name: overrideParameters
+  type: string
+  default: '$null'
+
+steps:
+- task: AzurePowerShell@5
+  name: ${{ parameters.stepName }}
+  displayName: ${{ parameters.displayName }}
+  inputs:
+    azureSubscription: ${{ parameters.serviceConnection }}
+    azurePowerShellVersion: 'LatestVersion'
+    pwsh: true
+    ScriptPath: '$(System.DefaultWorkingDirectory)/rx-shared-azure-deploy/scripts/New-Deploy.ps1'
+    ScriptArguments:
+      -SubscriptionId ${{ parameters.subscriptionId }}
+      -ResourceGroupName ${{ parameters.resourceGroupName }}
+      -Location ${{ parameters.location }}
+      -StepName ${{ parameters.stepName }}
+      -TemplateFile ${{ parameters.templateFile }}
+      -TemplateParameterFile ${{ parameters.templateParameterFile }}
+      -OverrideParameters "${{ parameters.overrideParameters }}"
